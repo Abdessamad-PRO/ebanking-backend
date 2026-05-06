@@ -1,9 +1,11 @@
 package org.sid.ebanking_backend;
 
+import org.sid.ebanking_backend.entities.AccountOperation;
 import org.sid.ebanking_backend.entities.CurrentAccount;
 import org.sid.ebanking_backend.entities.Customer;
 import org.sid.ebanking_backend.entities.SavingAccount;
 import org.sid.ebanking_backend.enums.AccountStatus;
+import org.sid.ebanking_backend.enums.OperationType;
 import org.sid.ebanking_backend.repositories.AccountOperationRepository;
 import org.sid.ebanking_backend.repositories.BankAccountRepository;
 import org.sid.ebanking_backend.repositories.CustomerRepository;
@@ -52,6 +54,17 @@ public class EbankingBackendApplication {
 				savingAccount.setCustomer(cust);
 				savingAccount.setInterestRate(5.5);
 				bankAccountRepository.save(savingAccount);
+			});
+
+			bankAccountRepository.findAll().forEach(acc->{
+				for(int i=0;i<10 ; i++){
+					AccountOperation accountOperation= new AccountOperation();
+					accountOperation.setOperationDate(new Date());
+					accountOperation.setAmount(Math.random()*12000);
+					accountOperation.setType(Math.random()>0.5 ? OperationType.DEBIT:OperationType.CREDIT);
+					accountOperation.setBankAccount(acc);
+					accountOperationRepository.save(accountOperation);
+				}
 			});
 
 		};
