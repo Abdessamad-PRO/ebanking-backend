@@ -1,9 +1,6 @@
 package org.sid.ebanking_backend;
 
-import org.sid.ebanking_backend.entities.AccountOperation;
-import org.sid.ebanking_backend.entities.CurrentAccount;
-import org.sid.ebanking_backend.entities.Customer;
-import org.sid.ebanking_backend.entities.SavingAccount;
+import org.sid.ebanking_backend.entities.*;
 import org.sid.ebanking_backend.enums.AccountStatus;
 import org.sid.ebanking_backend.enums.OperationType;
 import org.sid.ebanking_backend.repositories.AccountOperationRepository;
@@ -26,6 +23,26 @@ public class EbankingBackendApplication {
 		SpringApplication.run(EbankingBackendApplication.class, args);
 	}
 	@Bean
+	CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository){
+		return args -> {
+			BankAccount bankAccount = bankAccountRepository.findById("2c7ffbe4-cd48-42d9-8422-9e619cf6c42d").orElse(null);
+			System.out.println("==============================");
+			System.out.println(bankAccount.getId());
+			System.out.println(bankAccount.getBalance());
+			System.out.println(bankAccount.getStatus());
+			System.out.println(bankAccount.getCreatedAt());
+			System.out.println(bankAccount.getCustomer().getName());
+			if(bankAccount instanceof CurrentAccount){
+				System.out.println("Over draftc=:"+((CurrentAccount)bankAccount).getOverDraft());
+			}else if(bankAccount instanceof SavingAccount){
+				System.out.println("Rate =:"+((SavingAccount)bankAccount).getInterestRate());
+			}
+			bankAccount.getAccountOperations().forEach(op->{
+				System.out.println(op.getType()+"\t"+op.getOperationDate()+"\t"+op.getAmount());
+			});
+		};
+	}
+	//@Bean en commantaire pour ne pas inserer les données encre une fois
 	CommandLineRunner start(CustomerRepository customerRepository,
 							BankAccountRepository bankAccountRepository,
 							AccountOperationRepository accountOperationRepository){
@@ -65,6 +82,9 @@ public class EbankingBackendApplication {
 					accountOperation.setBankAccount(acc);
 					accountOperationRepository.save(accountOperation);
 				}
+
+
+
 			});
 
 		};
