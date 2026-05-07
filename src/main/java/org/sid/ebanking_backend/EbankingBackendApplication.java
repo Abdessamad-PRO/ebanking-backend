@@ -6,6 +6,7 @@ import org.sid.ebanking_backend.enums.OperationType;
 import org.sid.ebanking_backend.repositories.AccountOperationRepository;
 import org.sid.ebanking_backend.repositories.BankAccountRepository;
 import org.sid.ebanking_backend.repositories.CustomerRepository;
+import org.sid.ebanking_backend.services.BankService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,23 +24,9 @@ public class EbankingBackendApplication {
 		SpringApplication.run(EbankingBackendApplication.class, args);
 	}
 	@Bean
-	CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository){
+	CommandLineRunner commandLineRunner(BankService bankService){
 		return args -> {
-			BankAccount bankAccount = bankAccountRepository.findById("2c7ffbe4-cd48-42d9-8422-9e619cf6c42d").orElse(null);
-			System.out.println("==============================");
-			System.out.println(bankAccount.getId());
-			System.out.println(bankAccount.getBalance());
-			System.out.println(bankAccount.getStatus());
-			System.out.println(bankAccount.getCreatedAt());
-			System.out.println(bankAccount.getCustomer().getName());
-			if(bankAccount instanceof CurrentAccount){
-				System.out.println("Over draftc=:"+((CurrentAccount)bankAccount).getOverDraft());
-			}else if(bankAccount instanceof SavingAccount){
-				System.out.println("Rate =:"+((SavingAccount)bankAccount).getInterestRate());
-			}
-			bankAccount.getAccountOperations().forEach(op->{
-				System.out.println(op.getType()+"\t"+op.getOperationDate()+"\t"+op.getAmount());
-			});
+			bankService.consulter();
 		};
 	}
 	//@Bean en commantaire pour ne pas inserer les données encre une fois
