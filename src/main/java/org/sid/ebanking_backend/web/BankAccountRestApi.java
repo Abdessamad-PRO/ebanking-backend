@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class BankAccountRestApi {
     private BankAccountService bankAccountService;
-     public
+    public
 }
