@@ -2,9 +2,11 @@ package org.sid.ebanking_backend.mappers;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.sid.ebanking_backend.dtos.AccountOperationDTO;
 import org.sid.ebanking_backend.dtos.CurrentBankAccountDTO;
 import org.sid.ebanking_backend.dtos.CustomerDTO;
 import org.sid.ebanking_backend.dtos.SavingBankAccountDTO;
+import org.sid.ebanking_backend.entities.AccountOperation;
 import org.sid.ebanking_backend.entities.CurrentAccount;
 import org.sid.ebanking_backend.entities.Customer;
 import org.sid.ebanking_backend.entities.SavingAccount;
@@ -54,6 +56,12 @@ public class BankAccountMapperImpl {
         BeanUtils.copyProperties(currentBankAccountDTO,currentAccount);
         currentAccount.setCustomer(fromCustomerDTO(currentBankAccountDTO.getCustomerDTO()));
         return currentAccount;
+    }
+
+    public AccountOperationDTO fromAccountOperation(AccountOperation accountOperation){
+        AccountOperationDTO accountOperationDTO = new AccountOperationDTO();
+        BeanUtils.copyProperties(accountOperation, accountOperationDTO);
+        return accountOperationDTO;
     }
 
 }

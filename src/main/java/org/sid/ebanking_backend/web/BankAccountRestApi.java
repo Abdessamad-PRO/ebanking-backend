@@ -2,6 +2,7 @@ package org.sid.ebanking_backend.web;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sid.ebanking_backend.dtos.AccountOperationDTO;
 import org.sid.ebanking_backend.dtos.BankAccountDTO;
 import org.sid.ebanking_backend.exceptions.BankAccountNotFoundException;
 import org.sid.ebanking_backend.services.BankAccountService;
@@ -25,5 +26,9 @@ public class BankAccountRestApi {
     @GetMapping("/accounts")
     public List<BankAccountDTO> listAccounts(){
         return bankAccountService.bankAccountList();
+    }
+    @GetMapping("/accounts/{accountId}/operations")
+    public List<AccountOperationDTO> getHistory(@PathVariable String accountId){
+        return bankAccountService.accountHistory(accountId);
     }
 }

@@ -3,10 +3,7 @@ package org.sid.ebanking_backend.services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.sid.ebanking_backend.dtos.BankAccountDTO;
-import org.sid.ebanking_backend.dtos.CurrentBankAccountDTO;
-import org.sid.ebanking_backend.dtos.CustomerDTO;
-import org.sid.ebanking_backend.dtos.SavingBankAccountDTO;
+import org.sid.ebanking_backend.dtos.*;
 import org.sid.ebanking_backend.entities.*;
 import org.sid.ebanking_backend.enums.OperationType;
 import org.sid.ebanking_backend.exceptions.BalanceNotSufficientException;
@@ -257,6 +254,11 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public void deleteCustomer(Long customerId){
         customerRepository.deleteById(customerId);
+    }
+    @Override
+    public List<AccountOperationDTO> accountHistory(String accoutId){
+        List<AccountOperation> accountOperations = accountOperationRepository.findByBankAccountId(accoutId);
+        return accountOperations.stream().map(op->dtoMapper.fromAccountOperation(op)).collect(Collectors.toList());
     }
 
 
