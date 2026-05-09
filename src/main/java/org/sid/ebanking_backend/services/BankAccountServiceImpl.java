@@ -13,16 +13,12 @@ import org.sid.ebanking_backend.mappers.BankAccountMapperImpl;
 import org.sid.ebanking_backend.repositories.AccountOperationRepository;
 import org.sid.ebanking_backend.repositories.BankAccountRepository;
 import org.sid.ebanking_backend.repositories.CustomerRepository;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 
 @Service
 @Transactional
@@ -35,10 +31,20 @@ public class BankAccountServiceImpl implements BankAccountService {
     private AccountOperationRepository accountOperationRepository;
     private BankAccountMapperImpl dtoMapper;
 
+    // without dto
     @Override
     public Customer saveCustomer(Customer customer) {
         Customer savedCustomer = customerRepository.save(customer);
         return savedCustomer;
+    }
+
+
+    //with dto
+    @Override
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO){
+        Customer customer = dtoMapper.fromCustomerDTO(customerDTO);
+        Customer savedCustomer = customerRepository.save(customer);
+        return dtoMapper.fromCustomer(savedCustomer);
     }
 
     @Override
@@ -133,5 +139,12 @@ public class BankAccountServiceImpl implements BankAccountService {
     public List<BankAccount> bankAccountList() {
         return bankAccountRepository.findAll();
     }
+    @Override
+    public CustomerDTO getCustomer(Long customerId) throws CustomerNotFoundException {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException("customer not found"));
+        return dtoMapper.fromCustomer(customer);
+    }
+
 
 }
