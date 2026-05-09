@@ -1,13 +1,13 @@
 package org.sid.ebanking_backend.dtos;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import org.sid.ebanking_backend.enums.AccountStatus;
 
 import java.util.Date;
 
 
-@Entity
-
+@Data
 public class SavingBankAccountDTO extends BankAccountDTO {
 
     private String id;
