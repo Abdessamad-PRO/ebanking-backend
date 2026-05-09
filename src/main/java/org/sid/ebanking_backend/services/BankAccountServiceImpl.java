@@ -3,7 +3,9 @@ package org.sid.ebanking_backend.services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sid.ebanking_backend.dtos.CurrentBankAccountDTO;
 import org.sid.ebanking_backend.dtos.CustomerDTO;
+import org.sid.ebanking_backend.dtos.SavingBankAccountDTO;
 import org.sid.ebanking_backend.entities.*;
 import org.sid.ebanking_backend.enums.OperationType;
 import org.sid.ebanking_backend.exceptions.BalanceNotSufficientException;
@@ -65,6 +67,25 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
+    public CurrentBankAccountDTO saveCurrentBankAccount(double intialBalance, double overDraft, Long customerId) throws CustomerNotFoundException {
+        Customer customer = customerRepository.findById(customerId).orElse(null);
+        if(customer==null){
+            throw new CustomerNotFoundException("Customer not found");
+        }
+        CurrentAccount currentAccount = new CurrentAccount();
+
+        currentAccount.setId(UUID.randomUUID().toString());
+        currentAccount.setCreatedAt(new Date());
+        currentAccount.setBalance(intialBalance);
+        currentAccount.setCustomer(customer);
+        currentAccount.setOverDraft(overDraft);
+        CurrentAccount savedBankAccount = bankAccountRepository.save(currentAccount);
+        return dtoMapper.fromCurrentBankAccount(savedBankAccount);
+    }
+
+
+
+    @Override
     public SavingAccount saveSavingBankAccount(double intialBalance, double interestRate, Long customerId) throws CustomerNotFoundException {
         Customer customer = customerRepository.findById(customerId).orElse(null);
         if(customer==null){
@@ -78,6 +99,23 @@ public class BankAccountServiceImpl implements BankAccountService {
         savingAccount.setInterestRate(interestRate);
         SavingAccount savedBankAccount = bankAccountRepository.save(savingAccount);
         return savedBankAccount;
+
+    }
+
+    @Override
+    public SavingBankAccountDTO saveSavingBankAccount(double intialBalance, double interestRate, Long customerId) throws CustomerNotFoundException {
+        Customer customer = customerRepository.findById(customerId).orElse(null);
+        if(customer==null){
+            throw new CustomerNotFoundException("Customer not found");
+        }
+        SavingAccount savingAccount = new SavingAccount();
+        savingAccount.setId(UUID.randomUUID().toString());
+        savingAccount.setCreatedAt(new Date());
+        savingAccount.setBalance(intialBalance);
+        savingAccount.setCustomer(customer);
+        savingAccount.setInterestRate(interestRate);
+        SavingAccount savedBankAccount = bankAccountRepository.save(savingAccount);
+        return dtoMapper.fromSavingBankAccount(savedBankAccount);
 
     }
 

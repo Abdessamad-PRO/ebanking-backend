@@ -1,6 +1,8 @@
 package org.sid.ebanking_backend.services;
 
+import org.sid.ebanking_backend.dtos.CurrentBankAccountDTO;
 import org.sid.ebanking_backend.dtos.CustomerDTO;
+import org.sid.ebanking_backend.dtos.SavingBankAccountDTO;
 import org.sid.ebanking_backend.entities.BankAccount;
 import org.sid.ebanking_backend.entities.CurrentAccount;
 import org.sid.ebanking_backend.entities.Customer;
@@ -17,9 +19,9 @@ public interface BankAccountService {
 
     CustomerDTO saveCustomer(CustomerDTO customerDTO);
 
-    CurrentAccount saveCurrentBankAccount(double intialBalance, double overDraft, Long customerId ) throws CustomerNotFoundException;
+    CurrentBankAccountDTO saveCurrentBankAccount(double intialBalance, double overDraft, Long customerId) throws CustomerNotFoundException;
 
-    SavingAccount saveSavingBankAccount(double intialBalance, double interestRate, Long customerId ) throws CustomerNotFoundException ;
+    SavingBankAccountDTO saveSavingBankAccount(double intialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
 
     List<CustomerDTO> listCustomer();
 
