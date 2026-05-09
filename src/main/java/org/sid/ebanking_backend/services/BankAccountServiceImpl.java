@@ -3,11 +3,13 @@ package org.sid.ebanking_backend.services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sid.ebanking_backend.dtos.CustomerDTO;
 import org.sid.ebanking_backend.entities.*;
 import org.sid.ebanking_backend.enums.OperationType;
 import org.sid.ebanking_backend.exceptions.BalanceNotSufficientException;
 import org.sid.ebanking_backend.exceptions.BankAccountNotFoundException;
 import org.sid.ebanking_backend.exceptions.CustomerNotFoundException;
+import org.sid.ebanking_backend.mappers.BankAccountMapperImpl;
 import org.sid.ebanking_backend.repositories.AccountOperationRepository;
 import org.sid.ebanking_backend.repositories.BankAccountRepository;
 import org.sid.ebanking_backend.repositories.CustomerRepository;
@@ -18,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 
@@ -30,6 +33,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     private CustomerRepository customerRepository;
     private BankAccountRepository bankAccountRepository;
     private AccountOperationRepository accountOperationRepository;
+    private BankAccountMapperImpl dtoMapper;
 
     @Override
     public Customer saveCustomer(Customer customer) {
@@ -73,9 +77,14 @@ public class BankAccountServiceImpl implements BankAccountService {
 
 
     @Override
-    public List<Customer> listCustomer() {
-        return customerRepository.findAll();
+    public List<CustomerDTO> listCustomer() {
+        List<Customer> customers = customerRepository.findAll();
+        List<CustomerDTO> customerDTOS = customers.stream()
+                        .map(customer -> dtoMapper.fromCustomer(customer))
+                        .collect(Collectors.toList());//transférer une liste de customer en liste de customer dto
+        return customerDTOS;
     }
+
 
     @Override
     public BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException {
